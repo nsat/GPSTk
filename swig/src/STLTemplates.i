@@ -51,6 +51,11 @@
 // AKA ObsEpochMap
 %template(ObsEpochMap) std::map<gpstk::CommonTime, gpstk::ObsEpoch>;
 
+// AKA SysPhsShftMap
+%template(SVPhsShftMap) std::map<gpstk::RinexSatID, double>;
+%template(ObsPhsShftMap) std::map<gpstk::RinexObsID, std::map<gpstk::RinexSatID, double> >;
+%template(SysPhsShftMap) std::map<std::string, std::map<gpstk::RinexObsID, std::map<gpstk::RinexSatID, double> > >;
+
 // These are needed to properly interpret an ObsID instance
 %template(map_ObservationType_string) std::map<enum gpstk::ObsID::ObservationType, std::string>;
 %template(map_CarrierBand_string) std::map<enum gpstk::ObsID::CarrierBand, std::string>;
