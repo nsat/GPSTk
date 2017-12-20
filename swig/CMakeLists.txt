@@ -47,12 +47,6 @@ endif()
 
 set_source_files_properties( gpstk.i PROPERTIES CPLUSPLUS ON )
 
-if( NOT PYTHON_INSTALL_PREFIX )
-    message( STATUS "PYTHON_INSTALL_PREFIX: Install prefix for python package was not set by user." )
-    set( PYTHON_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}" )
-    message( STATUS "PYTHON_INSTALL_PREFIX: Using CMAKE_INSTALL_PREFIX as the default, so that PYTHON_INSTALL_PREFIX = ${PYTHON_INSTALL_PREFIX}" )
-endif()
-
 if( DEBUG_SWITCH )
     message( STATUS "SWIG_EXECUTABLE          = ${SWIG_EXECUTABLE}" )
     message( STATUS "SWIG_USE_FILE            = ${SWIG_USE_FILE}" )
@@ -132,7 +126,7 @@ set( SETUP_PY    "${MODULE_PATH}/setup.py" )
 configure_file( ${SETUP_PY_IN} ${SETUP_PY} )
 
 # Note: For setup.py install options, see https://docs.python.org/2/install/
-install( CODE "execute_process(COMMAND ${PYTHON_EXECUTABLE} ${SETUP_PY} install --prefix=${PYTHON_INSTALL_PREFIX} WORKING_DIRECTORY ${MODULE_PATH})" )
+install( CODE "execute_process(COMMAND ${PYTHON_EXECUTABLE} ${SETUP_PY} install WORKING_DIRECTORY ${MODULE_PATH})" )
 
 #------------------------------------------------------------
 # These files aren't required to use the bindings but are
