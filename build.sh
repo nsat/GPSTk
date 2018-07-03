@@ -276,7 +276,7 @@ if [ $build_packages ]; then
     esac   
     if [[ -z $exclude_python && $build_ext ]] ; then
         cd "$build_root"/swig/module
-        ${python_exe} setup.py sdist --formats=gztar
+        ${python_exe} setup.py sdist --formats=zip,gztar
     fi
 fi
 
