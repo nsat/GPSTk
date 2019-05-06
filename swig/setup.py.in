@@ -6,7 +6,7 @@ Purpose:
 
 Usage:
     help:           $ python setup.py --help-commands
-    system install: $ python setup.py install 
+    system install: $ python setup.py install
     user install:   $ python setup.py install --prefix=~/.local
     documentation:  https://docs.python.org/2/install/
 
@@ -71,10 +71,10 @@ setup( name              = "gpstk",
        url               = "http://www.gpstk.org/",
        license           = "LICENSE.txt",
        description       = "GPSTk python package installer",
-       keywords          = ('GNSS', 'GPS', 'RINEX'),
+       keywords          = ['GNSS', 'GPS', 'RINEX'],
        classifiers       = classifiers_list,
        packages          = ['gpstk'],
-       package_data      = { 'gpstk': ['_gpstk.so'],},
+       package_data      = {'gpstk': ['_gpstk.so']},
        scripts           = scripts_list,
        )
 

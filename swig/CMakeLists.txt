@@ -2,13 +2,15 @@
 # gpstk/swig/CMakeLists.txt
 #----------------------------------------
 
-cmake_minimum_required( VERSION 2.8.4  )
+cmake_minimum_required( VERSION 3.0.2 )
+cmake_policy( VERSION 3.14.3 )
 include( make_copy_targets.cmake )
 
 include( PythonSetup.cmake )
 
 find_package( SWIG REQUIRED )
-include( ${SWIG_USE_FILE} )
+include( UseSWIG )
+set (UseSWIG_TARGET_NAME_PREFERENCE STANDARD)
 
 #----------------------------------------
 # Compiler warning disables
@@ -68,36 +70,34 @@ endif()
 #
 # Note: list of all headers files are included in
 #       gpstk_swig.hpp which is included in gpstk.i
-set( SWIG_MODULE "gpstk" )
+set( SWIG_MODULE "gpstk.py" )
 
 include_directories( ${PYTHON_INCLUDE_DIRS} )
-include_directories( ${CMAKE_CURRENT_SOURCE_DIR} )
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/src )
 
-swig_add_module( ${SWIG_MODULE} python gpstk.i ) # why not also list all the other files.i here?!
-swig_link_libraries( ${SWIG_MODULE} gpstk )
-swig_link_libraries( ${SWIG_MODULE} ${PYTHON_LIBRARIES} )
+swig_add_library( ${SWIG_MODULE} LANGUAGE python SOURCES gpstk.i )
+target_link_libraries( ${SWIG_MODULE} gpstk )
+target_link_libraries( ${SWIG_MODULE} ${PYTHON_LIBRARIES} )
 
 # Install the gpstk module into the package file tree
 set( MODULE_PATH ${CMAKE_CURRENT_BINARY_DIR}/module )
-set( CMAKE_SWIG_OUTDIR ${MODULE_PATH}/${SWIG_MODULE} )
+set( CMAKE_SWIG_OUTDIR ${MODULE_PATH}/gpstk )
 
 
 #----------------------------------------
 # Add custom commands to the _gpstk.so build target
 #----------------------------------------
-#    ...to relocate the output from teh swig build target to
+#    ...to relocate the output from the swig build target to
 #    the correct directory within the python package file tree
 #        CMake documentation claims that all SWIG target output
 #        will be written to $CMAKE_SWIG_OUTDIR, but
 #        testing shows that this ONLY works for the gpstk.py
 #        and does NOT work for the _gpstk.so
 #----------------------------------------
-add_custom_target(swig-make-directory ALL
-    COMMAND ${CMAKE_COMMAND} -E make_directory ${MODULE_PATH}/gpstk)
-add_dependencies("_${SWIG_MODULE}" swig-make-directory)
-add_custom_command( TARGET "_${SWIG_MODULE}" POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy "_${SWIG_MODULE}.so" ${CMAKE_SWIG_OUTDIR} )
-add_custom_command( TARGET "_${SWIG_MODULE}" POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy "${SWIG_MODULE}.py" ${CMAKE_SWIG_OUTDIR} )
+add_custom_target( swig-make-directory ALL COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_SWIG_OUTDIR}" )
+add_dependencies( ${SWIG_MODULE} swig-make-directory )
+add_custom_command( TARGET ${SWIG_MODULE} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy "_${SWIG_MODULE}.so" "${CMAKE_SWIG_OUTDIR}/_gpstk.so" )
+add_custom_command( TARGET ${SWIG_MODULE} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy "gpstk.py" "${CMAKE_SWIG_OUTDIR}" )
 
 # Find all files in the gpstk, apps, and tests directories and set up dependancies to
 # copy them to the python module directory
